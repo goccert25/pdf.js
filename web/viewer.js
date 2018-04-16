@@ -97,6 +97,7 @@ function getViewerConfiguration() {
       cursorSelectToolButton: document.getElementById('cursorSelectTool'),
       cursorHandToolButton: document.getElementById('cursorHandTool'),
       documentPropertiesButton: document.getElementById('documentProperties'),
+      addSubviewToolButton: document.getElementById('addSubviewTool'),
     },
     fullscreen: {
       contextFirstPage: document.getElementById('contextFirstPage'),

@@ -1344,6 +1344,36 @@ let PDFViewerApplication = {
     // in the 'rotationchanging' event handler.
   },
 
+  addSubView() {
+    let subviewContainer = document.getElementById('subviewContainer');
+
+    let node = document.createElement("canvas");
+  
+    subviewContainer.appendChild(node);
+
+    getDocument(this.url).then(function (pdf) {
+      // Fetch the page.
+      pdf.getPage(1).then(function (page) {
+        var scale = 1;
+        var viewport = page.getViewport(scale);
+  
+        // Prepare canvas using PDF page dimensions.
+        var canvas = node;
+        var context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+  
+        // Render PDF page into canvas context.
+        var renderContext = {
+          canvasContext: context,
+          viewport: viewport
+        };
+        page.render(renderContext);
+      });
+    });
+    
+  },
+
   requestPresentationMode() {
     if (!this.pdfPresentationMode) {
       return;
@@ -1386,6 +1416,7 @@ let PDFViewerApplication = {
     eventBus.on('rotatecw', webViewerRotateCw);
     eventBus.on('rotateccw', webViewerRotateCcw);
     eventBus.on('documentproperties', webViewerDocumentProperties);
+    eventBus.on('addsubview', webViewerAddSubview);
     eventBus.on('find', webViewerFind);
     eventBus.on('findfromurlhash', webViewerFindFromUrlHash);
     if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
@@ -1452,6 +1483,7 @@ let PDFViewerApplication = {
     eventBus.off('rotatecw', webViewerRotateCw);
     eventBus.off('rotateccw', webViewerRotateCcw);
     eventBus.off('documentproperties', webViewerDocumentProperties);
+    eventBus.off('addsubview', webViewerAddSubview);
     eventBus.off('find', webViewerFind);
     eventBus.off('findfromurlhash', webViewerFindFromUrlHash);
     if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
@@ -1962,6 +1994,10 @@ function webViewerRotateCcw() {
 }
 function webViewerDocumentProperties() {
   PDFViewerApplication.pdfDocumentProperties.open();
+}
+function webViewerAddSubview() {
+  //need to add small divs that lock onto screen and float on the right side. 
+  PDFViewerApplication.addSubView();
 }
 
 function webViewerFind(evt) {

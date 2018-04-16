@@ -78,6 +78,8 @@ class SecondaryToolbar {
         eventDetails: { tool: CursorTool.HAND, }, close: true, },
       { element: options.documentPropertiesButton,
         eventName: 'documentproperties', close: true, },
+      { element: options.addSubviewToolButton,
+        eventName: 'addsubview', close: true, },
     ];
     this.items = {
       firstPage: options.firstPageButton,
