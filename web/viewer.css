@@ -92,6 +92,97 @@ select {
   position: relative;
 }
 
+
+
+
+
+
+#rightSidebarContainer {
+  position: absolute;
+  top: 32px;
+  bottom: 0;
+  width: 200px; /* Here, and elsewhere below, keep the constant value for compatibility
+                   with older browsers that lack support for CSS variables. */
+  width: var(--sidebar-width);
+  visibility: hidden;
+  z-index: 100;
+  border-top: 1px solid #333;
+
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+}
+html[dir='rtl'] #rightSidebarContainer {
+  transition-property: left;
+  left: -200px;
+  left: calc(-1 * var(--sidebar-width));
+}
+html[dir='ltr'] #rightSidebarContainer {
+  transition-property: right;
+  right: -200px;
+  right: calc(-1 * var(--sidebar-width));
+}
+
+.loadingInProgress #rightSidebarContainer {
+  top: 36px;
+}
+
+#outerContainer.rightSidebarResizing #rightSidebarContainer {
+  /* Improve responsiveness and avoid visual glitches when the sidebar is resized. */
+  transition-duration: 0s;
+  /* Prevent e.g. the thumbnails being selected when the sidebar is resized. */
+  user-select: none;
+}
+
+#outerContainer.rightSidebarMoving #rightSidebarContainer,
+#outerContainer.rightSidebarOpen #rightSidebarContainer {
+  visibility: visible;
+}
+html[dir='rtl'] #outerContainer.rightSidebarOpen #rightSidebarContainer {
+  left: 0px;
+}
+html[dir='ltr'] #outerContainer.rightSidebarOpen #rightSidebarContainer {
+  right: 0px;
+}
+
+#rightSidebarContent {
+  top: 32px;
+  bottom: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  position: absolute;
+  width: 100%;
+  background-color: hsla(0,0%,0%,.1);
+}
+html[dir='rtl'] #rightSidebarContent {
+  left: 0;
+  box-shadow: inset -1px 0 0 hsla(0,0%,0%,.25);
+}
+html[dir='ltr'] #rightSidebarContent {
+  right: 0;
+  box-shadow: inset 1px 0 0 hsla(0,0%,0%,.25);
+}
+
+#rightSidebarResizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  z-index: 200;
+  cursor: ew-resize;
+}
+html[dir='rtl'] #rightSidebarResizer {
+  right: -6px;
+}
+html[dir='ltr'] #rightSidebarResizer {
+  left: -6px;
+}
+
+
+
+
+
+
+
 #sidebarContainer {
   position: absolute;
   top: 32px;
@@ -189,6 +280,17 @@ html[dir='rtl'] #viewerContainer {
 #outerContainer.sidebarResizing #viewerContainer {
   /* Improve responsiveness and avoid visual glitches when the sidebar is resized. */
   transition-duration: 0s;
+}
+
+html[dir='rtl'] #outerContainer.rightSidebarOpen #viewerContainer {
+  transition-property: left;
+  left: 200px;
+  left: var(--sidebar-width);
+}
+html[dir='ltr'] #outerContainer.rightSidebarOpen #viewerContainer {
+  transition-property: right;
+  right: 200px;
+  right: var(--sidebar-width);
 }
 
 html[dir='ltr'] #outerContainer.sidebarOpen #viewerContainer {
@@ -1727,7 +1829,7 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   }
 
   /* Rules for browsers that don't support mozPrintCallback. */
-  #sidebarContainer, #secondaryToolbar, .toolbar, #loadingBox, #errorWrapper, .textLayer {
+  #rightSidebarContainer, #sidebarContainer, #secondaryToolbar, .toolbar, #loadingBox, #errorWrapper, .textLayer {
     display: none;
   }
   #viewerContainer {

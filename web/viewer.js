@@ -123,6 +123,16 @@ function getViewerConfiguration() {
       outerContainer: document.getElementById('outerContainer'),
       resizer: document.getElementById('sidebarResizer'),
     },
+    rightSidebar: {
+      // Divs (and sidebar button)
+      outerContainer: document.getElementById('outerContainer'),
+      viewerContainer: document.getElementById('viewerContainer'),
+      toggleButton: document.getElementById('addSubviewTool'),
+    },
+    rightSidebarResizer: {
+      outerContainer: document.getElementById('outerContainer'),
+      resizer: document.getElementById('rightSidebarResizer'),
+    },
     findBar: {
       bar: document.getElementById('findbar'),
       toggleButton: document.getElementById('viewFind'),

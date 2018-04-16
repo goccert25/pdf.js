@@ -28,6 +28,7 @@ import {
 import { CursorTool, PDFCursorTools } from './pdf_cursor_tools';
 import { PDFRenderingQueue, RenderingStates } from './pdf_rendering_queue';
 import { PDFSidebar, SidebarView } from './pdf_sidebar';
+import { PDFRightSidebar } from './pdf_rightsidebar';
 import { AppOptions } from './app_options';
 import { getGlobalEventBus } from './dom_events';
 import { OverlayManager } from './overlay_manager';
@@ -482,6 +483,20 @@ let PDFViewerApplication = {
 
       this.pdfSidebarResizer = new PDFSidebarResizer(appConfig.sidebarResizer,
                                                      eventBus, this.l10n);
+
+                                                     
+      // TODO: improve `PDFSidebar` constructor parameter passing
+      let rightsidebarConfig = Object.create(appConfig.rightSidebar);
+      rightsidebarConfig.pdfViewer = this.pdfViewer;
+      rightsidebarConfig.pdfThumbnailViewer = this.pdfThumbnailViewer;
+      rightsidebarConfig.pdfOutlineViewer = this.pdfOutlineViewer;
+      rightsidebarConfig.eventBus = eventBus;
+      this.pdfRightSidebar = new PDFRightSidebar(rightsidebarConfig, this.l10n);
+      this.pdfRightSidebar.onToggled = this.forceRendering.bind(this);
+
+      this.pdfRightSidebarResizer = new PDFSidebarResizer(appConfig.rightSidebarResizer,
+                                                     eventBus, this.l10n);
+
       resolve(undefined);
     });
   },
@@ -669,6 +684,7 @@ let PDFViewerApplication = {
     this.contentDispositionFilename = null;
 
     this.pdfSidebar.reset();
+    this.pdfRightSidebar.reset();
     this.pdfOutlineViewer.reset();
     this.pdfAttachmentViewer.reset();
 
@@ -1416,7 +1432,6 @@ let PDFViewerApplication = {
     eventBus.on('rotatecw', webViewerRotateCw);
     eventBus.on('rotateccw', webViewerRotateCcw);
     eventBus.on('documentproperties', webViewerDocumentProperties);
-    eventBus.on('addsubview', webViewerAddSubview);
     eventBus.on('find', webViewerFind);
     eventBus.on('findfromurlhash', webViewerFindFromUrlHash);
     if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
@@ -1483,7 +1498,6 @@ let PDFViewerApplication = {
     eventBus.off('rotatecw', webViewerRotateCw);
     eventBus.off('rotateccw', webViewerRotateCcw);
     eventBus.off('documentproperties', webViewerDocumentProperties);
-    eventBus.off('addsubview', webViewerAddSubview);
     eventBus.off('find', webViewerFind);
     eventBus.off('findfromurlhash', webViewerFindFromUrlHash);
     if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
@@ -1677,6 +1691,10 @@ function webViewerInitialized() {
 
   appConfig.sidebar.toggleButton.addEventListener('click', function() {
     PDFViewerApplication.pdfSidebar.toggle();
+  });
+
+  appConfig.rightSidebar.toggleButton.addEventListener('click', function() {
+    PDFViewerApplication.pdfRightSidebar.toggle();
   });
 
   Promise.resolve().then(function() {
